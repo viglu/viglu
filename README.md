@@ -1,4 +1,4 @@
-viglu
+Ghostscript  with Delphi
 =====
 
 Find here an example of how to use ghostscript in Delphi.
