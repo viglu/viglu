@@ -26,12 +26,16 @@ type
     cbConversionMethod: TComboBox;
     Label4: TLabel;
     btnConvert: TButton;
+    meStdIO: TMemo;
     procedure FormCreate(Sender: TObject);
     procedure btnBrowseInputClick(Sender: TObject);
     procedure btnBrowseOutputClick(Sender: TObject);
     procedure btnConvertClick(Sender: TObject);
   private
     { Private declarations }
+//    function stdin(caller_handle: Pointer; buf: PAnsichar; len: Integer): Integer;
+  //  function stdout(caller_handle: Pointer; buf: PAnsichar; len: Integer): Integer;
+    //function stderr(caller_handle: Pointer; buf: PAnsichar; len: Integer): Integer;
   public
     { Public declarations }
   end;
@@ -42,6 +46,35 @@ var
 implementation
 
 {$R *.dfm}
+
+function stderr(caller_handle: Pointer; buf: PAnsichar;
+  len: Integer): Integer; stdcall;
+begin
+  frmMain.meStdIO.Lines.Text :=
+    frmMain.meStdIO.Lines.Text +
+    StringReplace(Copy(buf, 1, len), #10, #13#10, [rfReplaceAll, rfIgnoreCase]);
+  Result := len;
+end;
+
+function stdin(caller_handle: Pointer; buf: PAnsichar;
+  len: Integer): Integer; stdcall;
+begin
+  frmMain.meStdIO.Lines.Text :=
+    frmMain.meStdIO.Lines.Text +
+    StringReplace(Copy(buf, 1, len), #10, #13#10, [rfReplaceAll, rfIgnoreCase]);
+  Result := len;
+end;
+
+function stdout(caller_handle: Pointer; buf: PAnsichar;
+  len: Integer): Integer; stdcall;
+begin
+  frmMain.meStdIO.Lines.Text :=
+    frmMain.meStdIO.Lines.Text +
+    StringReplace(Copy(buf, 1, len), #10, #13#10, [rfReplaceAll, rfIgnoreCase]);
+  Result := len;
+end;
+
+
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 var
@@ -88,6 +121,8 @@ begin
 
   if GSAPI_New_Instance(gsInstance, nil) = 0 then
   begin
+    GSAPI_Set_Stdio(gsInstance, @stdin, @stdout, @stderr);
+
     apiResult := GSAPI_Set_Arg_Encoding(gsInstance, GS_ARG_ENCODING_UTF8);
     if apiResult = 0 then
     begin

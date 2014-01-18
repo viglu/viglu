@@ -65,11 +65,10 @@ type
  * the number of characters written.
  * If a callback address is NULL, the real stdio will be used.
  *)
-{GSDLLEXPORT int GSDLLAPI
-gsapi_set_stdio(void *instance,
-    int (GSDLLCALLPTR stdin_fn)(void *caller_handle, char *buf, int len),
-    int (GSDLLCALLPTR stdout_fn)(void *caller_handle, const char *str, int len),
-    int (GSDLLCALLPTR stderr_fn)(void *caller_handle, const char *str, int len));}
+ TGSDLLCALLPTR = function (caller_handle: Pointer; buf: PAnsichar; len: Integer): Integer; stdcall;
+ PGSDLLCALLPTR = ^TGSDLLCALLPTR;
+ TGSAPI_Set_Stdio = function(instace: Pointer;
+                             sdtin_fn, stdout_fn, stderr_fn: PGSDLLCALLPTR): Integer; stdcall;
 
 (* Set the callback function for polling.
  * This is used for handling window events or cooperative
@@ -128,9 +127,11 @@ gsapi_set_stdio(void *instance,
    GSAPI_Revision: TGSAPI_Revision = nil;
    GSAPI_New_Instance: TGSAPI_New_Instance = nil;
    GSAPI_Delete_Instance: TGSAPI_Delete_Instance = nil;
+   GSAPI_Set_Stdio: TGSAPI_Set_Stdio = nil;
    GSAPI_Set_Arg_Encoding: TGSAPI_Set_Arg_Encoding = nil;
    GSAPI_Init_With_Args: TGSAPI_Init_With_Args = nil;
    GSAPI_Exit: TGSAPI_Exit = nil;
+
 
    function LoadGSDLL: Boolean;
    function IsGSDLLLoaded: Boolean;
@@ -153,6 +154,7 @@ begin
                 @GSAPI_Revision := GetProcAddress(hGS, 'gsapi_revision');
                 @GSAPI_New_Instance := GetProcAddress(hGS, 'gsapi_new_instance');
                 @GSAPI_Delete_Instance := GetProcAddress(hGS, 'gsapi_delete_instance');
+                @GSAPI_Set_Stdio := GetProcAddress(hGS, 'gsapi_set_stdio');
                 @GSAPI_Set_Arg_Encoding := GetProcAddress(hGS, 'gsapi_set_arg_encoding');
                 @GSAPI_Init_With_Args := GetProcAddress(hGS, 'gsapi_init_with_args');
                 @GSAPI_Exit := GetProcAddress(hGS, 'gsapi_exit');
@@ -171,6 +173,7 @@ begin
          GSAPI_Revision := nil;
          GSAPI_New_Instance := nil;
          GSAPI_Delete_Instance := nil;
+         GSAPI_Set_Stdio := nil;
          GSAPI_Set_Arg_Encoding := nil;
          GSAPI_Init_With_Args := nil;
          GSAPI_Exit := nil;

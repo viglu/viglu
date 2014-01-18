@@ -2,7 +2,7 @@ object frmMain: TfrmMain
   Left = 0
   Top = 0
   Caption = 'Ghostscript Demo'
-  ClientHeight = 343
+  ClientHeight = 451
   ClientWidth = 560
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -53,10 +53,10 @@ object frmMain: TfrmMain
     Left = 0
     Top = 138
     Width = 560
-    Height = 205
+    Height = 313
     Align = alClient
     TabOrder = 1
-    ExplicitHeight = 279
+    ExplicitHeight = 205
     object Label2: TLabel
       Left = 8
       Top = 57
@@ -148,6 +148,13 @@ object frmMain: TfrmMain
       Caption = 'Convert'
       TabOrder = 5
       OnClick = btnConvertClick
+    end
+    object meStdIO: TMemo
+      Left = 8
+      Top = 208
+      Width = 540
+      Height = 97
+      TabOrder = 6
     end
   end
   object pnlVersion: TPanel
